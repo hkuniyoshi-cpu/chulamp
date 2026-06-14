@@ -57,7 +57,7 @@
   <text x="600" y="450" font-family="Georgia, serif" font-size="15" fill="#E87833" text-anchor="middle" letter-spacing="4" opacity="0.85">那 覇 の 夜、焚 き 火 を 囲 む。</text>
 
   <!-- Domain -->
-  <text x="600" y="512" font-family="Georgia, serif" font-size="14" fill="#7A8A72" text-anchor="middle" letter-spacing="3">churanpu.search-mania.net</text>
+  <text x="600" y="512" font-family="Georgia, serif" font-size="14" fill="#7A8A72" text-anchor="middle" letter-spacing="3">churamp.search-mania.net</text>
 
   <!-- Diamond decorations -->
   <polygon points="600,130 606,136 600,142 594,136" fill="#E87833" opacity="0.7"/>
