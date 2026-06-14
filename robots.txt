@@ -22,4 +22,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://churanpu.search-mania.net/sitemap.xml
+Sitemap: https://churamp.search-mania.net/sitemap.xml
