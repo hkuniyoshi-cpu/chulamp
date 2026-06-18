@@ -184,8 +184,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* ── FOR YOU ── */
 #foryou{padding:100px 0;background:var(--dark)}
 .fy-head{margin-bottom:48px}
-.fy-scroll{overflow-x:auto;padding:0 80px 24px;display:flex;gap:20px;scrollbar-width:none}
+.fy-scroll{overflow-x:auto;padding:0 80px 24px;scrollbar-width:none}
 .fy-scroll::-webkit-scrollbar{display:none}
+.fy-inner{display:flex;gap:20px;width:fit-content;margin:0 auto}
 .fy-card{flex:0 0 280px;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;min-height:220px}
 .fy-img{aspect-ratio:4/3;background:var(--panel2);overflow:hidden;flex-shrink:0}
 .fy-img img{width:100%;height:100%;object-fit:cover}
@@ -780,13 +781,14 @@ function applyFeatures(items) {
 function applyForYou(items) {
   const el = document.getElementById('fyScroll');
   if (!el || !items || !items.length) return;
-  el.innerHTML = items.map(f => {
+  const cards = items.map(f => {
     const img = driveImg(f.image);
     return '<div class="fy-card">' +
-      '<div class="fy-img">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : '') + '</div>' +
+      (img ? '<div class="fy-img"><img src="' + esc(img) + '" alt="" loading="lazy"></div>' : '') +
       '<div class="fy-body"><div class="fy-lbl">' + esc(f.label) + '</div><div class="fy-cap">' + esc(f.caption) + '</div></div>' +
       '</div>';
   }).join('');
+  el.innerHTML = '<div class="fy-inner">' + cards + '</div>';
 }
 
 function applyReviews(items) {
