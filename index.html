@@ -186,12 +186,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .fy-head{margin-bottom:48px}
 .fy-scroll{overflow-x:auto;padding:0 80px 24px;display:flex;gap:20px;scrollbar-width:none}
 .fy-scroll::-webkit-scrollbar{display:none}
-.fy-card{flex:0 0 280px;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.fy-img{aspect-ratio:4/3;background:var(--panel2);overflow:hidden}
+.fy-card{flex:0 0 280px;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;min-height:220px}
+.fy-img{aspect-ratio:4/3;background:var(--panel2);overflow:hidden;flex-shrink:0}
 .fy-img img{width:100%;height:100%;object-fit:cover}
-.fy-body{padding:18px 20px}
-.fy-lbl{font-family:var(--ff-label);font-size:11px;letter-spacing:.2em;color:var(--ember);margin-bottom:7px}
-.fy-cap{font-size:13px;color:var(--smoke);line-height:1.75}
+.fy-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:28px 24px}
+.fy-lbl{font-family:var(--ff-label);font-size:12px;letter-spacing:.22em;color:var(--ember);margin-bottom:10px}
+.fy-cap{font-size:13px;color:var(--smoke);line-height:1.78;max-width:220px}
 
 /* ── REVIEWS ── */
 #reviews{padding:100px 0;background:var(--dark2)}
