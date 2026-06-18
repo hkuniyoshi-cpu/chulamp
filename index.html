@@ -83,6 +83,7 @@
      Cursor ambient glow (desktop only)
      ============================================================ -->
 <div id="cursor-glow" aria-hidden="true"></div>
+<div id="scroll-progress" aria-hidden="true"></div>
 
 <!-- ============================================================
      Page Loader
@@ -108,9 +109,6 @@
     <li><a href="https://www.instagram.com/campbar.churamp/" target="_blank" rel="noopener" class="nav-reserve">予約・お問い合わせ</a></li>
   </ul>
 </nav>
-
-<!-- Fixed section label (TNF-style) -->
-<div id="section-label" aria-hidden="true"><span></span></div>
 
 <!-- ============================================================
      Hero
@@ -175,7 +173,7 @@
 <!-- ============================================================
      About
      ============================================================ -->
-<section class="bg-dark" id="about" style="position:relative;overflow:hidden;">
+<section class="bg-dark e" id="about" style="position:relative;overflow:hidden;">
   <!-- Tent watermark -->
   <svg class="tent-watermark" width="420" height="300" viewBox="0 0 400 280" fill="none" aria-hidden="true">
     <path d="M200 20 L20 260 L380 260 Z" fill="rgba(232,120,51,.07)" stroke="rgba(232,120,51,.12)" stroke-width="1.5"/>
@@ -231,7 +229,7 @@
 <!-- ============================================================
      Menu
      ============================================================ -->
-<section class="bg-charcoal" id="menu">
+<section class="bg-charcoal e" id="menu">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">Food &amp; Drinks</span>
@@ -252,7 +250,7 @@
 <!-- ============================================================
      Features
      ============================================================ -->
-<section class="bg-dark" id="features">
+<section class="bg-dark e" id="features">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">What We Care</span>
@@ -319,7 +317,7 @@
 <!-- ============================================================
      For You
      ============================================================ -->
-<section class="bg-charcoal" id="for-you">
+<section class="bg-charcoal e" id="for-you">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">For You</span>
@@ -362,7 +360,7 @@
 <!-- ============================================================
      Reviews
      ============================================================ -->
-<section class="bg-dark" id="reviews">
+<section class="bg-dark e" id="reviews">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">Voices</span>
@@ -383,7 +381,7 @@
 <!-- ============================================================
      Blog
      ============================================================ -->
-<section id="blog">
+<section class="e" id="blog">
   <div class="inner">
     <div class="sec-head e">
       <span class="eyebrow dual">News &amp; Info</span>
@@ -399,7 +397,7 @@
 <!-- ============================================================
      Access
      ============================================================ -->
-<section class="bg-dark" id="access">
+<section class="bg-dark e" id="access">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">Find Us</span>
@@ -450,7 +448,7 @@
 <!-- ============================================================
      SNS
      ============================================================ -->
-<section class="bg-charcoal" id="sns">
+<section class="bg-charcoal e" id="sns">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">Follow Us</span>
@@ -475,7 +473,7 @@
 <!-- ============================================================
      Delivery
      ============================================================ -->
-<section class="bg-dark" id="delivery">
+<section class="bg-dark e" id="delivery">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">Delivery</span>
@@ -508,7 +506,7 @@
 <!-- ============================================================
      FAQ
      ============================================================ -->
-<section class="bg-charcoal" id="faq">
+<section class="bg-charcoal e" id="faq">
   <div class="section">
     <div class="sec-head e">
       <span class="eyebrow dual">FAQ</span>
@@ -1011,43 +1009,35 @@ function observe(root, selector) {
 document.addEventListener('DOMContentLoaded', () => {
   observe(document, '.e');
 
-  /* Section label — TNF style */
-  const labelEl  = document.getElementById('section-label');
-  const labelTxt = labelEl && labelEl.querySelector('span');
-  const SECTION_NAMES = {
-    about:    'ABOUT',
-    menu:     'MENU',
-    features: 'FEATURES',
-    'for-you':'FOR YOU',
-    reviews:  'REVIEWS',
-    blog:     'BLOG',
-    access:   'ACCESS',
-    sns:      'SNS',
-    delivery: 'PLAN',
-    faq:      'FAQ',
-  };
-  if (labelEl && labelTxt) {
-    let current = '';
-    const sio = new IntersectionObserver((entries) => {
+  /* Scroll progress bar */
+  const prog = document.getElementById('scroll-progress');
+  if (prog) {
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      prog.style.transform = 'scaleY(' + (window.scrollY / max) + ')';
+    }, { passive: true });
+  }
+
+  /* Count-up numbers */
+  const counters = document.querySelectorAll('[data-count]');
+  if (counters.length) {
+    const cio = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        const name = SECTION_NAMES[e.target.id];
-        if (!name) return;
-        if (e.isIntersecting) {
-          if (current !== name) {
-            current = name;
-            labelEl.classList.remove('visible');
-            setTimeout(() => { labelTxt.textContent = name; labelEl.classList.add('visible'); }, 120);
-          }
-        } else if (current === name) {
-          labelEl.classList.remove('visible');
-          current = '';
-        }
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = parseInt(el.dataset.count, 10);
+        const dur = 1200;
+        const start = performance.now();
+        (function tick(now) {
+          const p = Math.min((now - start) / dur, 1);
+          el.textContent = Math.floor(p * target);
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = target;
+        })(start);
+        cio.unobserve(el);
       });
-    }, { threshold: 0.25 });
-    Object.keys(SECTION_NAMES).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) sio.observe(el);
-    });
+    }, { threshold: 0.5 });
+    counters.forEach(el => cio.observe(el));
   }
 });
 
