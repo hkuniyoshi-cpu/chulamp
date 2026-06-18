@@ -114,6 +114,7 @@
      Hero
      ============================================================ -->
 <section class="hero" id="hero">
+  <div class="hero-photo-bg" id="heroPhotoBg" aria-hidden="true"></div>
   <div class="hero-img" aria-hidden="true">
     <img src="./hero-bg.jpg" alt="" loading="eager" fetchpriority="high">
   </div>
@@ -588,6 +589,10 @@
       <div class="copy" id="footerCopy">© Camp &amp; Bar ちゅらんぷ</div>
     </div>
   </div>
+  <p class="partner-notice-inline">
+    このサイトはCamp &amp; Bar ちゅらんぷの集客支援を目的に SearchMania Inc. が制作したパートナーサイトです。
+    <a href="https://www.instagram.com/campbar.churamp/" target="_blank" rel="noopener noreferrer">公式Instagram →</a>
+  </p>
   <div class="produced-by">
     Produced by <a href="https://search-mania.net/" target="_blank" rel="noopener noreferrer">SearchMania Inc.</a>
   </div>
@@ -661,6 +666,29 @@ function applyHero(h) {
   const sub = document.getElementById('heroSub');
   if (sub && h.subLines && h.subLines.length) {
     sub.innerHTML = h.subLines.map(l => esc(l)).join('<br>');
+  }
+  const photos = (h.photos || []).filter(function(p) { return p.image; });
+  if (!photos.length) return;
+  const bg = document.getElementById('heroPhotoBg');
+  if (!bg) return;
+  const urls = photos.map(function(p) { return driveImg(p.image); }).filter(Boolean);
+  if (!urls.length) return;
+  var idx = 0;
+  function showPhoto(url) {
+    var img = new Image();
+    img.onload = function() {
+      bg.style.backgroundImage = 'url("' + url + '")';
+      bg.classList.add('visible');
+    };
+    img.src = url;
+  }
+  showPhoto(urls[0]);
+  if (urls.length > 1) {
+    setInterval(function() {
+      idx = (idx + 1) % urls.length;
+      bg.classList.remove('visible');
+      setTimeout(function() { showPhoto(urls[idx]); }, 600);
+    }, 5000);
   }
 }
 
