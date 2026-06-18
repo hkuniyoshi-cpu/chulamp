@@ -115,6 +115,8 @@ body:not(.loaded) { overflow: hidden; }
   position: absolute;
   bottom: 64px;
   right: 44px;
+  left: auto;           /* reset shared.css left: 50% */
+  transform: none;      /* reset shared.css translateX(-50%) */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -370,6 +372,55 @@ a.blog-card:hover, article.blog-card:hover {
 .nav-links a:not(.nav-reserve):hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* ——————————————————————————————
+   Section label — TNF style fixed indicator
+—————————————————————————————— */
+#section-label {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#section-label::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 32px;
+  background: var(--ember);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: opacity .4s ease, transform .5s cubic-bezier(.76,0,.24,1);
+}
+#section-label span {
+  font-family: var(--display);
+  font-size: 9px;
+  letter-spacing: .55em;
+  text-transform: uppercase;
+  color: rgba(192,184,168,.55);
+  writing-mode: vertical-rl;
+  text-indent: .55em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .4s ease, transform .4s cubic-bezier(.76,0,.24,1);
+}
+#section-label.visible::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+#section-label.visible span {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (max-width: 768px) {
+  #section-label { display: none; }
 }
 
 /* ——————————————————————————————
