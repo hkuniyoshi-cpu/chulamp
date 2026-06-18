@@ -807,6 +807,12 @@ function applyReviews(items) {
   observe(grid);
 }
 
+function blogPostHref(url) {
+  if (!url) return '#';
+  const m = String(url).match(/\/blog\/([^\/\?]+)/);
+  return m ? '/blog/?post=' + encodeURIComponent(m[1]) : url;
+}
+
 function applyBlog(posts) {
   const wall = document.querySelector('#blog .wall');
   if (!wall) return;
@@ -818,14 +824,14 @@ function applyBlog(posts) {
     const img = driveImg(b.image);
     const cap = esc(b.title || (b.body || '').slice(0, 60));
     const dt = fmtDate(b.date);
-    const href = esc(b.url || '#');
-    return '<article class="bc" data-r data-d="' + (i % 3 + 1) + '">' +
+    const href = esc(blogPostHref(b.url));
+    return '<a href="' + href + '" class="bc" data-r data-d="' + (i % 3 + 1) + '" style="display:block;text-decoration:none;color:inherit">' +
       '<div class="bc-img">' + (img ? '<img src="' + img + '" alt="" loading="lazy">' : '') + '</div>' +
       '<div class="bc-body">' +
         '<p class="bc-date">' + dt + '</p>' +
         '<p class="bc-text">' + cap + '</p>' +
-        '<a href="' + href + '" class="bc-more">続きを読む</a>' +
-      '</div></article>';
+        '<span class="bc-more">続きを読む</span>' +
+      '</div></a>';
   }).join('');
   observe(wall);
 }
