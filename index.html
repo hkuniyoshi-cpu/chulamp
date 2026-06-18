@@ -84,10 +84,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 @keyframes slideUp{to{transform:translateY(0);opacity:1}}
 .hero-sub{font-size:14px;color:rgba(237,224,204,.6);line-height:1.95;max-width:400px;margin-bottom:36px;opacity:0;animation:ldrRise .6s ease forwards 2.5s}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:ldrRise .5s ease forwards 2.7s}
-.btn-em{padding:14px 32px;background:var(--ember);color:#fff;font-family:var(--ff-label);font-size:14px;letter-spacing:.1em;border-radius:3px;transition:background .25s,transform .2s}
-.btn-em:hover{background:var(--ember2);transform:translateY(-2px)}
-.btn-ol{padding:13px 30px;border:1px solid rgba(237,224,204,.22);color:var(--cream);font-family:var(--ff-label);font-size:14px;letter-spacing:.1em;border-radius:3px;transition:border-color .25s,transform .2s}
-.btn-ol:hover{border-color:rgba(237,224,204,.7);transform:translateY(-2px)}
+.btn-em{position:relative;overflow:hidden;padding:15px 34px;background:linear-gradient(135deg,var(--ember) 0%,var(--ember2) 100%);color:#fff;font-family:var(--ff-label);font-size:14px;letter-spacing:.12em;border-radius:4px;box-shadow:0 4px 20px rgba(232,98,28,.35);transition:box-shadow .3s,transform .2s}
+.btn-em:hover{box-shadow:0 6px 32px rgba(232,98,28,.6),0 0 0 1px rgba(232,98,28,.4);transform:translateY(-3px)}
+.btn-em::after{content:'';position:absolute;top:-50%;left:-70%;width:45%;height:200%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.32),transparent);transform:skewX(-18deg);animation:btnShimmer 2.8s ease-in-out infinite}
+@keyframes btnShimmer{0%{left:-70%}40%,100%{left:130%}}
+.btn-ol{position:relative;overflow:hidden;padding:14px 32px;border:1px solid rgba(237,224,204,.28);color:var(--cream);font-family:var(--ff-label);font-size:14px;letter-spacing:.12em;border-radius:4px;transition:border-color .3s,color .3s,box-shadow .3s,transform .2s;background:transparent}
+.btn-ol:hover{border-color:var(--ember);color:var(--ember);box-shadow:0 0 20px rgba(232,98,28,.2),inset 0 0 20px rgba(232,98,28,.05);transform:translateY(-3px)}
+/* review more card */
+.rv-more{background:var(--panel);border-radius:10px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:180px;transition:border-color .3s,transform .3s,box-shadow .3s;text-align:center;padding:32px}
+.rv-more:hover{border-color:rgba(232,98,28,.4);transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.rv-more-stars{color:var(--gold);font-size:22px;letter-spacing:.1em}
+.rv-more-label{font-family:var(--ff-disp);font-size:18px;font-weight:400;color:var(--cream)}
+.rv-more-arrow{font-family:var(--ff-label);font-size:12px;letter-spacing:.25em;color:var(--ember);opacity:.8}
 
 /* Hero right — rotating badge */
 .hero-R{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;padding:60px;opacity:0;animation:ldrRise .8s ease forwards 2.4s}
@@ -586,26 +594,32 @@ function initEmbers() {
   Pt.prototype.reset = function() {
     this.x = Math.random() * W;
     this.y = H + 5;
-    this.vx = (Math.random() - .5) * .6;
-    this.vy = -(Math.random() * 1.4 + .5);
-    this.a = Math.random() * .65 + .2;
-    this.r = Math.random() * 2.2 + .8;
+    this.vx = (Math.random() - .5) * .8;
+    this.vy = -(Math.random() * 2.2 + .8);
+    this.a = Math.random() * .35 + .6;
+    this.r = Math.random() * 4 + 2;
     this.life = 0;
-    this.max = Math.random() * 180 + 90;
+    this.max = Math.random() * 160 + 80;
   };
   function frame() {
     ctx.clearRect(0, 0, W, H);
-    if (pts.length < 55 && Math.random() < .35) pts.push(new Pt());
+    if (pts.length < 90 && Math.random() < .55) pts.push(new Pt());
     pts.forEach(p => {
-      p.x += p.vx + Math.sin(p.life * .04) * .4;
+      p.x += p.vx + Math.sin(p.life * .05) * .6;
       p.y += p.vy;
       p.life++;
       const prog = p.life / p.max;
       const a = p.a * (1 - prog);
-      const h = 22 + prog * 15;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'hsla(' + h + ',92%,' + (52 + prog * 22) + '%,' + a + ')';
+      const hue = 18 + prog * 20;
+      /* outer glow */
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4.5);
+      g.addColorStop(0, 'hsla(' + hue + ',100%,65%,' + (a * .55) + ')');
+      g.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = g; ctx.fill();
+      /* bright core */
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsla(' + hue + ',95%,' + (70 + prog * 20) + '%,' + a + ')';
       ctx.fill();
       if (p.life >= p.max) p.reset();
     });
@@ -613,7 +627,7 @@ function initEmbers() {
   }
   window.addEventListener('resize', resize);
   resize();
-  for (let i = 0; i < 18; i++) { const p = new Pt(); p.y = Math.random() * H; p.life = Math.random() * p.max; pts.push(p); }
+  for (let i = 0; i < 28; i++) { const p = new Pt(); p.y = Math.random() * H; p.life = Math.random() * p.max; pts.push(p); }
   frame();
 }
 
@@ -779,11 +793,17 @@ function applyReviews(items) {
   const grid = document.getElementById('reviewsGrid');
   if (!grid) return;
   if (!items || !items.length) { grid.innerHTML = '<p style="color:var(--smoke);grid-column:span 3;text-align:center;padding:40px">クチコミを読み込み中です</p>'; return; }
-  grid.innerHTML = items.slice(0,6).map((r,i) => '<article class="rv-card" data-r data-d="' + (i%3+1) + '">' +
+  const shown = items.slice(0, 5);
+  grid.innerHTML = shown.map((r,i) => '<article class="rv-card" data-r data-d="' + (i%3+1) + '">' +
     '<div class="rv-stars">' + stars(r.stars) + '</div>' +
     '<p class="rv-text">' + esc(r.text) + '</p>' +
     '<footer class="rv-author">' + esc(r.name) + (r.date ? ' · ' + fmtDate(r.date) : '') + '</footer>' +
-    '</article>').join('');
+    '</article>').join('') +
+    '<a href="https://www.google.com/maps/search/?api=1&query=Camp+Bar+ちゅらんぷ+那覇市牧志" target="_blank" rel="noopener" class="rv-more" data-r data-d="3">' +
+      '<div class="rv-more-stars">★★★★★</div>' +
+      '<div class="rv-more-label">Googleでクチコミをもっと見る</div>' +
+      '<span class="rv-more-arrow">VIEW ALL →</span>' +
+    '</a>';
   observe(grid);
 }
 
