@@ -671,19 +671,28 @@ function applyHero(h) {
   if (!photos.length) return;
   const urls = photos.map(function(p) { return driveImg(p.image); }).filter(Boolean);
   if (!urls.length) return;
-  /* hero-img img の src を直接更新 — z-index 依存なし */
-  const heroImg = document.querySelector('.hero-img img');
-  if (!heroImg) return;
-  heroImg.src = urls[0];
+  const heroImgDiv = document.querySelector('.hero-img');
+  if (!heroImgDiv) return;
+  /* broken hero-bg.jpg を非表示にして div に background-image を直接設定 */
+  var heroStaticImg = heroImgDiv.querySelector('img');
+  if (heroStaticImg) heroStaticImg.style.opacity = '0';
+  heroImgDiv.style.backgroundSize = 'cover';
+  heroImgDiv.style.backgroundPosition = 'center 45%';
+  var slideIdx = 0;
+  function applyBg(url) {
+    var pre = new Image();
+    pre.onload = function() {
+      heroImgDiv.style.transition = 'background-image 0s, opacity .8s ease';
+      heroImgDiv.style.backgroundImage = 'url("' + url + '")';
+    };
+    pre.onerror = function() { console.warn('[hero] image load failed:', url); };
+    pre.src = url;
+  }
+  applyBg(urls[0]);
   if (urls.length > 1) {
-    var idx = 0;
     setInterval(function() {
-      idx = (idx + 1) % urls.length;
-      heroImg.style.opacity = '0';
-      setTimeout(function() {
-        heroImg.src = urls[idx];
-        heroImg.onload = function() { heroImg.style.opacity = '1'; };
-      }, 600);
+      slideIdx = (slideIdx + 1) % urls.length;
+      applyBg(urls[slideIdx]);
     }, 5000);
   }
 }
