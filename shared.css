@@ -1165,6 +1165,21 @@ footer {
   line-height: 1.8;
 }
 .footer-copy .copy { color: var(--muted); }
+.partner-notice-inline {
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.9;
+  color: rgba(245,236,216,.22);
+  letter-spacing: .04em;
+  margin-bottom: 14px;
+}
+.partner-notice-inline a {
+  color: rgba(232,120,51,.45);
+  text-decoration: none;
+  transition: color .3s;
+}
+.partner-notice-inline a:hover { color: var(--ember); }
+
 footer .produced-by {
   text-align: center;
   padding-top: 22px;
